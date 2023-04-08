@@ -1,2 +1,4 @@
 class Bpnds():
-    pass
+    def duration_calc():
+        pass
+    
