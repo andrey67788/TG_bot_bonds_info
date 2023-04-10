@@ -1,49 +1,51 @@
-import
+import numpy as np
+from typing import Any
+from scipy import optimize
 
-class Bonds():
-    def YTM(price, par, T, coup, freq=2):
 
+class Coupon_Bonds():
+    def get_price(self, coupon: float, face_value: float, int_rate: float, years: int, freq: int = 2) -> float:
+        total_coupons_pv = self.get_coupons_pv(coupon, int_rate, years, freq)
+        face_value_pv = self.get_face_value_pv(face_value, int_rate, years)
+        result = total_coupons_pv + face_value_pv
+        return result
 
-    def bond_ytm():
+    @staticmethod
+    def get_face_value_pv(face_value: float, int_rate: float, years: int) -> float:
+        face_value_pv = face_value / (1 + int_rate)**years
+        return face_value_pv
+
+    def get_coupons_pv(self, coupon: float, int_rate: float, years: int, freq: int = 2) -> float:
+        pv = 0
+        for period in range(years * freq):
+            pv += self.get_coupon_pv(coupon, int_rate, period+1, freq)
+        return pv
+
+    @staticmethod
+    def get_coupon_pv(coupon: float, int_rate: float, period: int, freq: int) -> float:
+        pv = coupon / (1 + int_rate / freq)**period
+        return pv
+
+    def get_ytm(self, bond_price: Any, face_value: float, coupon: float,
+            years: int, freq: int = 2, estimate: float = 0.05) -> float:
         """
         Function to calculate YTM of a bond
-
         Arguments:
-        price : Price of the bond
-        par : Par Value of the bond
-        T : Maturity Date in Years
-        coup : Coupon Rate of the Bond
-        freq : Number of Coupon Payments per Year (default = 2)
-
+        bond_price (int) - Price of the bond
+        face_value (float) - Face Value of the bond
+        coupon (float) - Coupon Rate of the Bond
+        years (int) - Maturity Date in Years
+        freq (int) - Number of Coupon Payments per Year (default = 2)
         Returns:
-        YTM : Yield to Maturity of the Bond
-
+        get_YTM (float) - Yield to Maturity of the Bond
         """
+        get_yield = lambda int_rate: self.get_price(coupon, face_value, int_rate, years, freq) - bond_price
+        return optimize.newton(get_yield, estimate)
 
-        # Convert Par Value and Coupon Rate to Decimals
-        par = par/100.0   # Par Value
-        coup = coup/100.0 # Coupon Rate
-
-        # Calculate Bond Price using Newton's Method
-
-        freq = float(freq) # Frequency of Payments per Year
-
-         # Initial Guess for YTM
-
-         ytm_est = (coup + ((par - price)/T))/(par + price)
-
-         # Set Maximum Number of Iterations and Tolerance Level for Convergence
-
-         max_iterations = 1000 # Maximum Number of Iterations
-
-         tolerance = 0.000001 # Tolerance Level for Convergence
-
-         i = 0 # Iteration Counter Initialization
-
-         while i < max_iterations:
-
-            ytm_est -= (((((1+ytm_est)**(T*freq))*price)-par)/((T*freq)*(((1+ytm_est)**(T*freq))-1)+par*((1+ytm_est)**(T*freq))))/((((1+ytm_est)**(T*freq))-1)/ytm_est+(T*freq)*((1+ytm_est)**(T*freq)))      if abs((price - bondPriceCalc(par, T, coup, ytm_est, freq))) <= tolerance:      break      i += 1 else:      print("Error! Maximum Iterations Exceeded!")      return None return ytm_est
-
-
-    def duration_calc():
+    def duration_calc(self):
         pass
+
+
+my_bond = Coupon_Bonds()
+ytm = my_bond.get_ytm(95.05, 100.0, 5.75, 2, 1)
+print(ytm)
