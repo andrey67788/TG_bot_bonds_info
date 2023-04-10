@@ -1,6 +1,0 @@
-class Bonds():
-    def YTM():
-        pass
-
-    def duration_calc():
-        pass
