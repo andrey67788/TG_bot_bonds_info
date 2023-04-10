@@ -1,4 +1,7 @@
-class Bonds():
+import numpy as np
+
+
+class Coupon_Bonds():
     def YTM():
         pass
 
