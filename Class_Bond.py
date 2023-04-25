@@ -12,22 +12,22 @@ class Coupon_Bonds():
 
     @staticmethod
     def get_face_value_pv(face_value: float, int_rate: float, years: int) -> float:
-        face_value_pv = face_value / (1 + int_rate)**years
+        face_value_pv = face_value / (1 + int_rate) ** years
         return face_value_pv
 
     def get_coupons_pv(self, coupon: float, int_rate: float, years: int, freq: int = 2) -> float:
         pv = 0
         for period in range(years * freq):
-            pv += self.get_coupon_pv(coupon, int_rate, period+1, freq)
+            pv += self.get_coupon_pv(coupon, int_rate, period + 1, freq)
         return pv
 
     @staticmethod
     def get_coupon_pv(coupon: float, int_rate: float, period: int, freq: int) -> float:
-        pv = coupon / (1 + int_rate / freq)**period
+        pv = coupon / (1 + int_rate / freq) ** period
         return pv
 
     def get_ytm(self, bond_price: Any, face_value: float, coupon: float,
-            years: int, freq: int = 2, estimate: float = 0.05) -> float:
+                years: int, freq: int = 2, estimate: float = 0.05) -> float:
         """
         Function to calculate YTM of a bond
         Arguments:
@@ -47,5 +47,5 @@ class Coupon_Bonds():
 
 
 my_bond = Coupon_Bonds()
-ytm = my_bond.get_ytm(95.05, 100.0, 5.75, 2, 1)
+ytm = my_bond.get_ytm(bond_price=95.05, face_value=100.0, coupon=5.75, years=2, freq=1)
 print(ytm)
