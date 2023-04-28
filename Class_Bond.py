@@ -47,5 +47,5 @@ class Coupon_Bonds():
 
 
 my_bond = Coupon_Bonds()
-ytm = my_bond.get_ytm(bond_price=95.05, face_value=100.0, coupon=5.75, years=2, freq=1)
+ytm = my_bond.get_ytm(bond_price=95.05, face_value=100.0, coupon=0, years=2, freq=1)
 print(ytm)
